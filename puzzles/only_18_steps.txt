@@ -1,0 +1,6 @@
+5 4
+ABBC
+DBBE
+FGHI
+JKLM
+N__O
