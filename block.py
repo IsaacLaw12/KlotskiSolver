@@ -32,7 +32,7 @@ class Block:
         for x_offset in range(self.max_corner[0] - self.min_corner[0]):
             for y_offset in range(self.max_corner[1] - self.min_corner[1]):
                 index = self.min_corner + [x_offset, y_offset]
-                indexes.append(index)
+                indexes.append(tuple(index))
         return indexes
 
     def intersection(self, block):
