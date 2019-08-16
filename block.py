@@ -12,7 +12,7 @@ class Block:
         self.max_corner - self.min_corner
 
     def hash_corners(self):
-        return hash((self.min_corner, self.max_corner))
+        return hash((tuple(self.min_corner), tuple(self.max_corner)))
 
     def append_coordinate(self, position):
         # Expand the block to contain the coordinates specified by position

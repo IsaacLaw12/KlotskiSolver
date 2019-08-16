@@ -42,5 +42,13 @@ class test_block(unittest.TestCase):
         self.assertEqual(tuple(block.min_corner), (0,0))
         self.assertEqual(tuple(block.max_corner), (7,7))
 
+    def test_hashing(self):
+        block_one = Block((2,2), (2,2))
+        block_two = Block((3,3), (2,2))
+        self.assertTrue(not block_one.hash_corners() == block_two.hash_corners())
+
+        block_two.move_block(np.array([-1, -1]))
+        self.assertTrue(block_one.hash_corners() == block_two.hash_corners())
+
 if __name__ == '__main__':
     unittest.main()
