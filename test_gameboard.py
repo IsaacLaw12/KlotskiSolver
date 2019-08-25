@@ -8,11 +8,14 @@ class test_board(unittest.TestCase):
         board = GameBoard('./puzzles/only_18_steps.txt')
 
         self.assertEqual(board.shape, tuple([8, 6]))
-        self.assertEqual(tuple(board.board.min_corner), (0,0))
-        self.assertEqual(tuple(board.board.max_corner), (8,6))
         block_names = ['A', '*', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
         for bn in block_names:
             self.assertTrue(bn in board.blocks)
+
+    def test_block_loading(self):
+        board = GameBoard('./puzzles/only_18_steps.txt')
+        self.assertEqual(tuple(board.goal_block.min_corner), (7,2))
+        self.assertEqual(tuple(board.goal_block.max_corner), (9,4))
 
     def test_hashing(self):
         board = GameBoard('./puzzles/only_18_steps.txt')

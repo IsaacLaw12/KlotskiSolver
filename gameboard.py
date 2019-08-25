@@ -17,6 +17,7 @@ class GameBoard:
         self.passable_obstacles = []
         self.goal_block = None
         self.load_game()
+        print(self.goal_block)
 
     def hash_state(self, blocks=None):
         # Create a hash of the current state.  Blocks of the same shape have the same
@@ -72,6 +73,7 @@ class GameBoard:
         self.shape = tuple(shape)
 
     def set_goal(self, position):
+        print(position)
         if self.goal_block is None:
             self.goal_block = Block(position)
         else:
@@ -168,10 +170,9 @@ class GameBoard:
 
     def solved(self, test_blocks=None):
         if test_blocks is None:
-            test_blocks = self.blocks
+            player_block = self.blocks[GameBoard.PLAYER_CHAR]
         else:
-            self.set_state(test_blocks)
-        player_block = self.blocks[GameBoard.PLAYER_CHAR]
+            player_block = test_blocks[GameBoard.PLAYER_CHAR]
         return self.goal_block.contains(player_block)
 
     def print_board(self):
