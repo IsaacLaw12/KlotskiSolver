@@ -24,6 +24,7 @@ class Block:
         self.max_corner = np.max(compare, axis=0)
 
     def move_block(self, move):
+        move = np.array(move)
         self.min_corner = self.min_corner + move
         self.max_corner = self.max_corner + move
 

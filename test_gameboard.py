@@ -7,7 +7,7 @@ class test_board(unittest.TestCase):
     def test_file_loading(self):
         board = GameBoard('./puzzles/only_18_steps.txt')
 
-        self.assertEqual(board.shape, tuple([8, 6]))
+        self.assertEqual(board.shape, tuple([9, 6]))
         block_names = ['A', '*', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
         for bn in block_names:
             self.assertTrue(bn in board.blocks)
@@ -36,6 +36,11 @@ class test_board(unittest.TestCase):
         board.blocks['z'].move_block(np.array([-1, -1]))
         self.assertEqual(board.hash_state(), board2.hash_state())
 
+    def test_player_escaped(self):
+        board = GameBoard('./puzzles/only_18_steps.txt')
+        self.assertFalse(board.player_escaped())
+        board.blocks[GameBoard.PLAYER_CHAR].move_block((4, 0))
+        self.assertTrue(board.player_escaped())
 
 
 if __name__ == '__main__':

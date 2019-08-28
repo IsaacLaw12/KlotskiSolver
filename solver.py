@@ -5,49 +5,55 @@ from gameboard import GameBoard
 class Solver:
     def __init__(self, game_board):
         self.game_board = game_board
-        self.visited_states = []
-        self.solve()
+        self.visited_states = set()
 
-    def solve(self):
+    def solve(self, break_at_first_solution=False):
         explore_queue = Queue()
         base_state = self.game_board.get_state()
         explore_queue.put(base_state)
-        explored_states = 0
+        num_explored_states = 0
         solutions = 0
         while not explore_queue.empty():
-            #print(explore_queue.qsize())
-            #print(len(self.visited_states))
-            explored_states += 1
+            num_explored_states += 1
             current_state = explore_queue.get()
             if self.game_board.solved(current_state):
                 solutions += 1
+                if break_at_first_solution:
+                    break
             else:
                 self.extract_potential_moves(current_state, explore_queue)
-        print("Finished solving. %d solutions found and %d states explored " % (solutions, explored_states))
+        print("Finished solving. %d solutions found and %d states explored " % (solutions, num_explored_states))
 
     def extract_potential_moves(self, state, queue):
         self.game_board.set_state(state)
-        # Try to move the player first, otherwise move all the other blocks
-        possible_moves = self.unique_player_moves()
-        if not possible_moves:
-            possible_moves = self.game_board.available_moves()
+        adjacent_move_states = self.game_board.available_moves()
+        # If the player block is now unimpeded don't bother moving other blocks
+        if self.game_board.player_escaped():
+            player_move_states = self.unique_player_moves()
+            if player_move_states:
+                adjacent_move_states = player_move_states
 
-        for state in possible_moves:
+        for state in adjacent_move_states:
             hash_state = self.game_board.hash_state(state)
             if hash_state not in self.visited_states:
-                self.visited_states.append(hash_state)
+                self.visited_states.add(hash_state)
                 queue.put(state)
 
     def unique_player_moves(self):
-        possible_player_moves = self.game_board.valid_moves(GameBoard.PLAYER_CHAR)
-        possible_moves = []
-        if possible_player_moves:
-            for move in possible_player_moves:
-                if self.game_board.hash_state(move) not in self.visited_states:
-                    possible_moves.append(move)
-        return possible_moves
+        adjacent_player_states = self.game_board.valid_moves(GameBoard.PLAYER_CHAR)
+        possible_states = []
+        if adjacent_player_states:
+            for state in adjacent_player_states:
+                if self.game_board.hash_state(state) not in self.visited_states:
+                    possible_states.append(state)
+        return possible_states
+
+    def mark_state_visited(self, hashed_state=None):
+        if hashed_state is None:
+            hashed_state = self.game_board.hash_state()
+        self.visited_states.add(hashed_state)
 
 if __name__ == "__main__":
     gb = GameBoard('./puzzles/only_18_steps.txt')
-    solve = Solver(gb)
-    # gb.print_board()
+    solver = Solver(gb)
+    solver.solve(True)

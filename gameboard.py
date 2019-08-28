@@ -17,7 +17,6 @@ class GameBoard:
         self.passable_obstacles = []
         self.goal_block = None
         self.load_game()
-        print(self.goal_block)
 
     def hash_state(self, blocks=None):
         # Create a hash of the current state.  Blocks of the same shape have the same
@@ -73,7 +72,6 @@ class GameBoard:
         self.shape = tuple(shape)
 
     def set_goal(self, position):
-        print(position)
         if self.goal_block is None:
             self.goal_block = Block(position)
         else:
@@ -129,7 +127,7 @@ class GameBoard:
         for index in self.passable_obstacles:
             # The player block is the only one allowed to overlap with the passable_obstacles
             # Otherwise it blocks competition
-            if index not in player_indexes:
+            if tuple(index) not in player_indexes:
                 board[tuple(index)] += 1
         return board
 
@@ -151,6 +149,11 @@ class GameBoard:
                     valid_states.append(move_state)
         return valid_states
 
+    def current_state_valid(self):
+        move_no_where = np.array((0,0))
+        is_valid, move_state = self.is_valid_state(GameBoard.PLAYER_CHAR, move_no_where)
+        return is_valid
+
     def is_valid_state(self, block_key, move):
         self.blocks[block_key].move_block(move)
         move_state = self.get_state()
@@ -163,7 +166,7 @@ class GameBoard:
         indexes = self.blocks[obstacle_key].covered_indexes()
         result = False
         for obstacle_index in self.passable_obstacles:
-            if obstacle_index in indexes:
+            if tuple(obstacle_index) in indexes:
                 result = True
                 break
         return result
@@ -174,6 +177,14 @@ class GameBoard:
         else:
             player_block = test_blocks[GameBoard.PLAYER_CHAR]
         return self.goal_block.contains(player_block)
+
+    def player_escaped(self):
+        '''
+        Returns True if the player block can move towards the goal_block unimpeded by other blocks
+            This assumes a player block geometry where intersecting passable_obstacles correlates with
+            being able to move towards the goal unimpeded by other blocks.
+        '''
+        return self.intersects_passable_obstacle(GameBoard.PLAYER_CHAR)
 
     def print_board(self):
         board = np.chararray(self.shape, unicode=True)
@@ -192,3 +203,4 @@ class GameBoard:
             for col in range(self.shape[1]):
                 print(board[tuple([row, col])], end="")
             print()
+        print()
