@@ -12,7 +12,7 @@ class Block:
         self.max_corner - self.min_corner
 
     def hash_corners(self):
-        return hash((self.min_corner, self.max_corner))
+        return hash((tuple(self.min_corner), tuple(self.max_corner)))
 
     def append_coordinate(self, position):
         # Expand the block to contain the coordinates specified by position
@@ -24,6 +24,7 @@ class Block:
         self.max_corner = np.max(compare, axis=0)
 
     def move_block(self, move):
+        move = np.array(move)
         self.min_corner = self.min_corner + move
         self.max_corner = self.max_corner + move
 
@@ -32,7 +33,7 @@ class Block:
         for x_offset in range(self.max_corner[0] - self.min_corner[0]):
             for y_offset in range(self.max_corner[1] - self.min_corner[1]):
                 index = self.min_corner + [x_offset, y_offset]
-                indexes.append(index)
+                indexes.append(tuple(index))
         return indexes
 
     def intersection(self, block):
