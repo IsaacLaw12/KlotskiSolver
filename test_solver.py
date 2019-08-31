@@ -46,23 +46,5 @@ class test_solver(unittest.TestCase):
         for state in expected_available_states:
             self.assertTrue(state in state_list)
 
-
-    def _test_queue(self, queue, contents, length, erase=False):
-        self.assertEqual(queue.qsize(), length)
-        new_queue = Queue()
-        try:
-            for i in range(length):
-                current_test = contents[i]
-                current_object = queue.get()
-                if not erase:
-                    new_queue.put(current_object)
-                self.assertEqual(current_test, current_object)
-        except IndexError:
-            print("Queue fails comparison")
-        queue = new_queue
-
-
-
-
 if __name__ == '__main__':
     unittest.main()
